@@ -3,7 +3,7 @@
 from flask import Flask, session, render_template, redirect, flash
 from models import db, connect_db, User, Note
 #from flask_wtf import FlaskForm
-from forms import RegisterForm, LoginForm, CSRFProtectForm
+from forms import RegisterForm, LoginForm, CSRFProtectForm, NoteForm
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -127,3 +127,24 @@ def delete_user(username):
         return redirect(f'/users/{user.username}')
 
 
+@app.route('/users/<username>/notes/add', methods = ['GET','POST'])
+def add_note(username):
+    """Displays add note form and adds note to username and
+    redirect to user page"""
+
+    user = User.query.get_or_404(username)
+
+    form = NoteForm()
+
+    if form.validate_on_submit():
+        title = form.title.data
+        content = form.content.data
+
+        new_note = Note(title=title, content=content, owner=username)
+        db.session.add(new_note)
+        db.session.commit()
+
+        return redirect(f'/users/{user.username}')
+
+    else:
+        return render_template('note.html', form=form)

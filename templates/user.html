@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}You made it!{% endblock %}
+{% block title %}{{ user.first_name }} {{ user.last_name }}{% endblock %}
 
 {% block content %}
 
@@ -11,13 +11,19 @@
 <h3>Notes</h3>
 <ul>
   {% for note in user.notes %}
-  <li>{{ note.title }} <br>
+  <li><a href=" /notes/{{note.id}}/update">Edit</a>
+    <a href=" /notes/{{note.id}}/delete">Delete</a>{{ note.title }} <br>
     <p>{{ note.content }}</p>
   </li>
   {% endfor %}
 </ul>
 
+<form action="/users/{{user.username}}/notes/add" method="GET">
+  {{form.hidden_tag()}}
 
+  <button type="submit" class="btn btn-primary">Add Note</button>
+
+</form>
 
 <form action="/logout" method="POST">
   {{form.hidden_tag()}}
