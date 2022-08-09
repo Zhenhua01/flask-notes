@@ -5,10 +5,7 @@
 {% block content %}
 
 
-
 <h1 class="display-4">Register A New User</h1>
-
-
 
 <form id="user-add-form" method="POST">
   {{ form.hidden_tag() }} <!--add type=hidden form fields -->
@@ -26,7 +23,7 @@
 
   {% endfor %}
 
-<button type="submit">Submit</button>
+<button class="btn btn-primary" type="submit">Submit</button>
 
 </form>
 

@@ -1,7 +1,7 @@
 """Forms Model"""
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, PasswordField
+from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Email, Length
 # why need to install email_validator?
 
@@ -40,3 +40,6 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password",
                             validators=[InputRequired(),
                             Length(max=100)])
+
+class CSRFProtectForm(FlaskForm):
+    """Form just for CSRF Protection"""
