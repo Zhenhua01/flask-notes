@@ -9,6 +9,9 @@
   <div class="navbar navbar-light bg-primary">
     <div class="navbar-container">
       <div class="navbar-brand"><a class="text-white" href="/">Flask Notes App</a></div>
+      {% if 'user_id' not in session %}
+      <a href="/login" class="text-white">Login</a>
+      {% endif %}
     </div>
   </div>
 
