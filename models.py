@@ -12,7 +12,7 @@ def connect_db(app):
 
 
 class User(db.Model):
-    """Notes User"""
+    """User Model"""
 
     __tablename__ = 'users'
 
@@ -47,3 +47,17 @@ class User(db.Model):
             return u
         else:
             return False
+
+
+    notes = db.relationship('Note', backref='user')
+
+
+class Note(db.Model):
+    """Notes Model """
+
+    __tablename__ = 'notes'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    owner = db.Column(db.Text, db.ForeignKey('users.username'), nullable=False)

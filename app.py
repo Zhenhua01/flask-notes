@@ -1,7 +1,7 @@
 """Flask app for flask notes"""
 
 from flask import Flask, session, render_template, redirect, flash
-from models import db, connect_db, User
+from models import db, connect_db, User, Note
 #from flask_wtf import FlaskForm
 from forms import RegisterForm, LoginForm, CSRFProtectForm
 from flask_debugtoolbar import DebugToolbarExtension
@@ -104,3 +104,26 @@ def logout():
         session.pop('username', None)
 
     return redirect("/")
+
+
+@app.post('/users/<username>/delete')
+def delete_user(username):
+    """Deletes user instance from DB"""
+
+    user = User.query.get_or_404(username)
+    form = CSRFProtectForm()
+
+    if form.validate_on_submit():
+        session.pop('username', None)
+        if user.notes:
+            db.session.delete(*user.notes)
+            db.session.commit()
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return redirect ('/')
+    else:
+        return redirect(f'/users/{user.username}')
+
+

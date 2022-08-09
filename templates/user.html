@@ -7,12 +7,30 @@
 <h1>{{ user.first_name }} {{ user.last_name }}</h1>
 <p>Email: {{ user.email }}</p>
 
-{% if 'username' in session %}
-  <form action="/logout" method="POST">
-    {{form.hidden_tag()}}
 
-    <button type="submit" class="btn btn-primary">Logout</button>
-  </form>
-{% endif %}
+<h3>Notes</h3>
+<ul>
+  {% for note in user.notes %}
+  <li>{{ note.title }} <br>
+    <p>{{ note.content }}</p>
+  </li>
+  {% endfor %}
+</ul>
+
+
+
+<form action="/logout" method="POST">
+  {{form.hidden_tag()}}
+
+  <button type="submit" class="btn btn-primary">Logout</button>
+
+</form>
+
+<form action="/users/{{user.username}}/delete" method="POST">
+  {{form.hidden_tag()}}
+
+  <button type="submit" class="btn btn-primary">Delete</button>
+
+</form>
 
 {% endblock %}
