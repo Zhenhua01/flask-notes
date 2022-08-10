@@ -11,32 +11,36 @@
 <h3>Notes</h3>
 <ul>
   {% for note in user.notes %}
-  <li><a href=" /notes/{{note.id}}/update">Edit</a>
-    <a href=" /notes/{{note.id}}/delete">Delete</a>{{ note.title }} <br>
-    <p>{{ note.content }}</p>
+  <li>
+    {{ note.title }}: {{ note.content }}
+    <div>
+      <button class="btn btn-primary">
+        <a class = "text-white" href="/notes/{{note.id}}/update">Edit</a>
+      </button>
+
+      <form action="/notes/{{note.id}}/delete" method="POST">
+        {{form.hidden_tag()}}
+        <button type="submit" class="btn btn-danger">Delete Note</button>
+      </form>
+    </div>
   </li>
   {% endfor %}
 </ul>
 
 <form action="/users/{{user.username}}/notes/add" method="GET">
-  {{form.hidden_tag()}}
-
   <button type="submit" class="btn btn-primary">Add Note</button>
-
 </form>
 
 <form action="/logout" method="POST">
   {{form.hidden_tag()}}
-
   <button type="submit" class="btn btn-primary">Logout</button>
-
 </form>
 
 <form action="/users/{{user.username}}/delete" method="POST">
   {{form.hidden_tag()}}
-
   <button type="submit" class="btn btn-primary">Delete</button>
-
 </form>
 
 {% endblock %}
+
+<!-- formaction formmethod on each button -->

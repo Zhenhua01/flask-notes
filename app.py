@@ -2,7 +2,6 @@
 
 from flask import Flask, session, render_template, redirect, flash
 from models import db, connect_db, User, Note
-#from flask_wtf import FlaskForm
 from forms import RegisterForm, LoginForm, CSRFProtectForm, NoteForm
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -111,13 +110,14 @@ def delete_user(username):
     """Deletes user instance from DB"""
 
     user = User.query.get_or_404(username)
+
     form = CSRFProtectForm()
 
     if form.validate_on_submit():
         session.pop('username', None)
-        if user.notes:
-            db.session.delete(*user.notes)
-            db.session.commit()
+
+        Note.query.filter_by(owner=username).delete()
+        db.session.commit()
 
         db.session.delete(user)
         db.session.commit()
@@ -131,6 +131,9 @@ def delete_user(username):
 def add_note(username):
     """Displays add note form and adds note to username and
     redirect to user page"""
+
+    if "username" not in session or username != session['username']:
+        return redirect("/login")
 
     user = User.query.get_or_404(username)
 
@@ -148,3 +151,46 @@ def add_note(username):
 
     else:
         return render_template('note.html', form=form)
+
+
+@app.route('/notes/<int:note_id>/update', methods = ['GET','POST'])
+def edit_note(note_id):
+    """Displays note form and edits note of user and
+    redirect to user page"""
+
+    note = Note.query.get_or_404(note_id)
+
+    if "username" not in session or note.owner != session['username']:
+        return redirect("/login")
+
+    form = NoteForm(obj=note)
+
+    if form.validate_on_submit():
+        note.title = form.title.data
+        note.content = form.content.data
+        db.session.commit()
+
+        return redirect(f'/users/{note.owner}')
+
+    else:
+        return render_template('note.html', form=form)
+
+
+@app.post('/notes/<int:note_id>/delete')
+def delete_note(note_id):
+    """Deletes note instance from DB"""
+
+    note = Note.query.get_or_404(note_id)
+
+    if "username" not in session or note.owner != session['username']:
+        return redirect("/login")
+
+    form = CSRFProtectForm()
+
+    if form.validate_on_submit():
+        db.session.delete(note)
+        db.session.commit()
+
+        return redirect(f'/users/{note.owner}')
+    else:
+        return redirect(f'/users/{note.owner}')

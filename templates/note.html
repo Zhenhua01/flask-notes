@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Note{% endblock %}
+{% block title %}Note{% endblock %}
 
 {% block content %}
 
-<h1 class="display-4">Add Note</h1>
+<h1 class="display-4">Note</h1>
 
-
-<form id="note-add-form" method="POST">
+<form id="note-form" method="POST">
   {{ form.hidden_tag() }} <!--add type=hidden form fields -->
 
   {% for field in form
